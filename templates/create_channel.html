@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block body %}
+  <h1 class="header-font">Create a Channel</h1>
+  <br>
+
+ <!-- Create Channel Form -->
+   <div class="login-page">
+     <div class="form">
+       <form class="register-form" action="{{ url_for('create_channel') }}" method="post">
+         <p>{{ message }}</p>
+         <input type="text" name="channel_name" id="channel_name" placeholder="Channel Name">
+         <button id="btn">create channel</button>
+       </form>
+     </div>
+   </div>
+{% endblock %}
