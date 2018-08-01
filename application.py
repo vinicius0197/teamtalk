@@ -54,3 +54,10 @@ def message_handler():
     messages.append(message)
 
     return render_template("channel_home.html", messages=messages)
+
+@socketio.on("submit message")
+def message(data):
+    # Get message
+    message = data["message"]
+    emit("announce message", {"message": message}, broadcast=True)
+    
