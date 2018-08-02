@@ -11,6 +11,20 @@ socketio = SocketIO(app)
 user_list = []
 channel_list = []
 messages = []
+channel_dict = {}
+
+def add_message_to_channel(channel_name, messages, dict):
+    """ Appends messages to channel in dictionary """
+
+    # TODO: pensar numa maneira de não termos um KeyError aqui
+
+    # if channel_name not in channel_list:
+    #     dict[channel_name] = []
+
+    dict[channel_name] = []
+    dict[channel_name].append(messages)
+
+    return dict
 
 @app.route("/")
 def index():
@@ -46,18 +60,30 @@ def channels():
 
     return render_template("channel_home.html", channels=channel_list)
 
-@app.route("/message_handler", methods=['POST'])
-def message_handler():
-    """ Handles sending and receiving messages """
+# @app.route("/message_handler", methods=['POST'])
+# def message_handler():
+#     """ Handles sending and receiving messages """
 
-    message = request.form.get("message_field")
-    messages.append(message)
+#     message = request.form.get("message_field")
+#     messages.append(message)
 
-    return render_template("channel_home.html", messages=messages)
+#     return render_template("channel_home.html", messages=messages)
 
 @socketio.on("submit message")
 def message(data):
-    # Get message
+    """ Handles user messages between server and client """
     message = data["message"]
+    channel = data["channel"]
+
+    add_message_to_channel(channel, message, channel_dict)
+
     emit("announce message", {"message": message}, broadcast=True)
-    
+
+@socketio.on("channel selected")
+def channelHandler(channelData):
+    """ Sends message history to client of current channel """
+    current_channel = channelData["current_channel"]
+    print(channel_dict)
+    lastMessages = channel_dict[current_channel]
+
+    emit("display channel", {"channel": current_channel, "messages": lastMessages}, broadcast=True)

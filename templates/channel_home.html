@@ -1,6 +1,13 @@
 {% extends "layout.html" %}
 
 {% block body %}
+<!-- Sidebar with list of channels -->
+<div id="channels">
+    {% for channel in channels -%}
+      <a href="#">{{ channel }}</a><br>
+    {%- endfor %}
+</div>
+
 <!-- Form for sending messages -->
   <div class="messages"></div>
   <form class="message-form" onsubmit="return false;">
