@@ -21,7 +21,7 @@ def add_message_to_channel(channel_name, messages, dict):
     # if channel_name not in channel_list:
     #     dict[channel_name] = []
 
-    dict[channel_name] = []
+    # dict[channel_name] = []
     dict[channel_name].append(messages)
 
     return dict
@@ -84,7 +84,6 @@ def message(data):
 def channelHandler(channelData):
     """ Sends message history to client of current channel """
     current_channel = channelData["current_channel"]
-    print(channel_dict)
     lastMessages = channel_dict[current_channel]
 
     emit("display channel", {"channel": current_channel, "messages": lastMessages}, broadcast=True)

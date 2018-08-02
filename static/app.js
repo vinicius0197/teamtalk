@@ -83,9 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		let channel = data.channel;
 		let message_history = data.messages;
 		let counter = 0;
-
-		alert(message_history);
-
+		
 		for(counter = 0; counter < message_history.length; counter ++) {
 			addMessageToListDOM(message_history[counter]);
 		}
