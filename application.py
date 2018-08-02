@@ -49,6 +49,7 @@ def create_channel():
     channel = request.form.get("channel_name")
     if channel not in channel_list:
         channel_list.append(channel)
+        channel_dict[channel] = []
     else:
         message = "This channel already exists"
         return render_template("create_channel.html", message=message)
