@@ -82,7 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	// When a new message is announced, add it to list
 	socket.on('announce message', data => {
 		let message = data.message;
-		addMessageToListDOM(message);
+		let channel = data.channel;
+		let selected_channel = getChannel();
+		if (channel === selected_channel) {
+			addMessageToListDOM(message);
+		}
+		// addMessageToListDOM(message);
 	});
 
 	// When a user selects a channel, message history should be displayed

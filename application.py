@@ -78,7 +78,7 @@ def message(data):
 
     add_message_to_channel(channel, message, channel_dict)
 
-    emit("announce message", {"message": message}, broadcast=True)
+    emit("announce message", {"message": message, "channel": channel}, broadcast=True)
 
 @socketio.on("channel selected")
 def channelHandler(channelData):
