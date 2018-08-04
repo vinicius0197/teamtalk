@@ -2,6 +2,8 @@ import os
 
 from flask import Flask, render_template, request, redirect, url_for
 from flask_socketio import SocketIO, emit
+import time
+import datetime
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
@@ -16,12 +18,6 @@ channel_dict = {}
 def add_message_to_channel(channel_name, messages, dict):
     """ Appends messages to channel in dictionary """
 
-    # TODO: pensar numa maneira de não termos um KeyError aqui
-
-    # if channel_name not in channel_list:
-    #     dict[channel_name] = []
-
-    # dict[channel_name] = []
     dict[channel_name].append(messages)
 
     return dict
@@ -61,24 +57,25 @@ def channels():
 
     return render_template("channel_home.html", channels=channel_list)
 
-# @app.route("/message_handler", methods=['POST'])
-# def message_handler():
-#     """ Handles sending and receiving messages """
-
-#     message = request.form.get("message_field")
-#     messages.append(message)
-
-#     return render_template("channel_home.html", messages=messages)
-
 @socketio.on("submit message")
 def message(data):
     """ Handles user messages between server and client """
     message = data["message"]
     channel = data["channel"]
+    user = data["user"]
 
-    add_message_to_channel(channel, message, channel_dict)
+    timestamp = time.time()
+    st = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
 
-    emit("announce message", {"message": message, "channel": channel}, broadcast=True)
+    new_message = user + " | " + st + " : " + message
+
+    add_message_to_channel(channel, new_message, channel_dict)
+
+    # Server should only store the last 100 messages in each channel
+    if len(channel_dict[channel]) > 100:
+        channel_dict[channel].pop(0)
+
+    emit("announce message", {"user": user, "timestamp": st, "message": message, "channel": channel}, broadcast=True)
 
 @socketio.on("channel selected")
 def channelHandler(channelData):

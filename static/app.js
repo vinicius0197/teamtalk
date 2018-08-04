@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		input: document.querySelector('.message-form__input'),
 		form: document.querySelector('.message-form'),
 	};
+
 	function createMessageElement(text) {
 		const el = document.createElement('div');
 		el.appendChild(document.createTextNode(text));
@@ -42,6 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
 		return localStorage.getItem('selected_channel');
 	}
 
+	function getUser() {
+		return localStorage.getItem('uname');
+	}
+
 	function displayChannel() {
 		// TODO: uses getChannel() and then updates the .message
 		// box to display the last 100 messages in the selected
@@ -52,6 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.messages').querySelectorAll('.message').forEach((elem) => {
       elem.parentNode.removeChild(elem);
     });
+  }
+
+  function cleanTextBox() {
+  	document.querySelector('.message-form__input').value = "";
   }
 
 	// Connect to websocket
@@ -75,7 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		document.querySelector('.message-form__button').onclick = () => {
 			const message = document.querySelector('.message-form__input').value;
 			const channel = getChannel();
-			socket.emit('submit message', {'message': message, 'channel': channel});
+			const user = getUser();
+			socket.emit('submit message', {'message': message, 'channel': channel, 'user': user});
+			cleanTextBox();
 		};
 	});
 
@@ -83,11 +94,15 @@ document.addEventListener('DOMContentLoaded', () => {
 	socket.on('announce message', data => {
 		let message = data.message;
 		let channel = data.channel;
+		let timestamp = data.timestamp;
+		let user = data.user;
 		let selected_channel = getChannel();
+
+		let final_message = user + " | " + timestamp + " : " + message;
+
 		if (channel === selected_channel) {
-			addMessageToListDOM(message);
+			addMessageToListDOM(final_message);
 		}
-		// addMessageToListDOM(message);
 	});
 
 	// When a user selects a channel, message history should be displayed
