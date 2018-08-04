@@ -2,7 +2,8 @@
 
 {% block body %}
 <!-- Sidebar with list of channels -->
-<div id="channels">
+<div id="channels" class="channel-nav">
+  <h2 class="channel-title">Channels</h1>
     {% for channel in channels -%}
       <a href="#">{{ channel }}</a><br>
     {%- endfor %}

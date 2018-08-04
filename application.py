@@ -17,7 +17,6 @@ channel_dict = {}
 
 def add_message_to_channel(channel_name, messages, dict):
     """ Appends messages to channel in dictionary """
-
     dict[channel_name].append(messages)
 
     return dict
