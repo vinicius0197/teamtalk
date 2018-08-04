@@ -86,4 +86,4 @@ def channelHandler(channelData):
     current_channel = channelData["current_channel"]
     lastMessages = channel_dict[current_channel]
 
-    emit("display channel", {"channel": current_channel, "messages": lastMessages}, broadcast=True)
+    emit("display channel", {"channel": current_channel, "messages": lastMessages}, broadcast=False)

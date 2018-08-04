@@ -47,6 +47,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		// box to display the last 100 messages in the selected
 		// channel
 	}
+  
+  function cleanMessages() {
+    document.querySelector('.messages').querySelectorAll('.message').forEach((elem) => {
+      elem.parentNode.removeChild(elem);
+    });
+  }
 
 	// Connect to websocket
 	var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
@@ -57,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		// Selecting a channel should ask server for channel message history
 		document.getElementById('channels').querySelectorAll('a').forEach((element) => {
 			element.onclick = () => {
+        cleanMessages();
 				localStorage.setItem('selected_channel', element.innerHTML);
 				current_channel = getChannel();
 
