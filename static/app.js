@@ -21,14 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
 		messages: document.querySelector('.messages'),
 		input: document.querySelector('.message-form__input'),
 		form: document.querySelector('.message-form'),
-	};
+	}
 
 	function createMessageElement(text) {
 		const el = document.createElement('div');
 		el.appendChild(document.createTextNode(text));
 		el.className = 'message';
 		return el;
-	};
+	}
 
 	function addMessageToListDOM(text) {
 		const el = DOM.messages;
@@ -39,18 +39,14 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
+	// Gets a channel name saved in localStorage
 	function getChannel() {
 		return localStorage.getItem('selected_channel');
 	}
 
+	// Gets a user name saved in localStorage
 	function getUser() {
 		return localStorage.getItem('uname');
-	}
-
-	function displayChannel() {
-		// TODO: uses getChannel() and then updates the .message
-		// box to display the last 100 messages in the selected
-		// channel
 	}
   
   function cleanMessages() {
@@ -69,15 +65,19 @@ document.addEventListener('DOMContentLoaded', () => {
 	// When connected, configure button
 	socket.on('connect', () => {
 
+		// Reloads a channel the user has previously visited
+		current_channel = getChannel();
+		socket.emit('channel selected', {'current_channel': current_channel});
+
 		// Selecting a channel should ask server for channel message history
 		document.getElementById('channels').querySelectorAll('a').forEach((element) => {
 			element.onclick = () => {
-        cleanMessages();
+				cleanMessages();
 				localStorage.setItem('selected_channel', element.innerHTML);
 				current_channel = getChannel();
 
 				socket.emit('channel selected', {'current_channel': current_channel});
-			};
+			}
 		});
 
 		// 'Send' button should emit an event
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			const user = getUser();
 			socket.emit('submit message', {'message': message, 'channel': channel, 'user': user});
 			cleanTextBox();
-		};
+		}
 	});
 
 	// When a new message is announced, add it to list
